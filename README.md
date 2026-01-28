@@ -54,7 +54,19 @@ Evaluate models using standard computer vision metrics:
 * **Confusion Matrices**: Detailed breakdown of misclassifications.
 * **K-Fold Cross-Validation**: ensuring the model generalizes across different data splits.
 
-### 6) Explainable AI (XAI) Framework
+### 6) Ablation Studies
+
+To better understand the contribution of individual components, we conduct controlled ablation studies using **5-fold cross-validation**, where only one factor is modified at a time while keeping the remaining training protocol unchanged. The ablations analyze:
+
+- **Pretraining vs. Training from Scratch** – to quantify the benefit of ImageNet initialization.
+- **Data Augmentation** – to assess robustness gains from geometric and photometric transformations.
+- **Backbone Fine-Tuning vs. Freezing** – to evaluate the necessity of deep feature adaptation.
+- **Input Resolution** – to study the effect of spatial detail on pothole recognition.
+- **Loss Function Choice** – to examine performance sensitivity to different optimization objectives.
+
+These studies isolate which architectural and training decisions most strongly influence performance and provide deeper insight into why the hybrid Transformer–CNN ensemble achieves superior results.
+
+### 7) Explainable AI (XAI) Framework
 
 Ensure transparency through a multi-method interpretability suite:
 
