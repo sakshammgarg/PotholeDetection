@@ -1,103 +1,103 @@
 # Pothole Detection using Hybrid Transformer-CNN Ensemble & Explainable AI
 
-This project focuses on automated road damage assessment using a hybrid deep learning pipeline that combines Vision Transformers (ViT) and Convolutional Neural Networks (CNNs). The system accurately classifies road surface images into **Potholes** and **Normal** categories, addressing the need for robust infrastructure monitoring and transparent AI decision-making.
+This project focuses on automated road damage assessment using a hybrid deep learning pipeline that combines Vision Transformers (ViT) and Convolutional Neural Networks (CNNs). The system classifies road surface images into **Pothole** and **Normal** categories, addressing the need for reliable infrastructure monitoring while emphasizing transparent and interpretable AI decision-making.
 
 ## Project Description
 
-This project aims to build a resilient automated pothole detection system using a **Weighted Ensemble** of state-of-the-art architectures. By integrating the global context capabilities of Transformers with the local texture extraction of CNNs, the model achieves superior generalization. To ensure trust in automated maintenance systems, the project implements a comprehensive **Explainable AI (XAI)** suite (Grad-CAM, SHAP, LIME) to visualize exactly where the model detects damage.
+This project presents a robust automated pothole detection system built using a **Hybrid Weighted Ensemble** of modern deep learning architectures. By integrating the global contextual reasoning of Transformers with the local texture sensitivity of CNNs, the system achieves strong generalization across challenging road conditions. To promote trust in automated maintenance workflows, the project incorporates a comprehensive **Explainable AI (XAI)** framework (Grad-CAM, SHAP, and LIME), enabling clear visualization of the features influencing each prediction.
 
 ## Key Steps
 
 ### 1) Data Loading and Exploration
 
-* Load the Pothole Detection dataset from Kaggle
-* Inspect image integrity and label distribution (Pothole vs. Normal)
-* Visualize random samples to understand surface variations (lighting, wet roads, shadows)
-* Split data into stratified folds for robust Cross-Validation
+* Load the pothole detection dataset from Kaggle.
+* Verify image quality and class balance (Pothole vs. Normal).
+* Visualize representative samples to understand variations in lighting, shadows, wet surfaces, and road markings.
+* Prepare stratified splits to support reliable cross-validation.
 
 ### 2) Data Preprocessing
 
-* **Albumentations Pipeline**: Heavy augmentation (flips, rotations, brightness contrast) to simulate real-world road conditions.
-* **Normalization**: Apply ImageNet mean/std normalization for transfer learning compatibility.
-* **Resizing**: Standardize inputs (e.g., 224x224 or 384x384) specific to each model architecture.
+* **Albumentations Pipeline**: Apply extensive geometric and photometric augmentations (flips, rotations, brightness/contrast) to simulate real-world road conditions.
+* **Normalization**: Use ImageNet mean and standard deviation to ensure compatibility with pretrained backbones.
+* **Resizing**: Standardize image resolution (e.g., 224×224 or 384×384) according to architectural requirements.
 
 ### 3) Model Architecture
 
-Train a diverse set of ImageNet-pretrained models to capture different image features:
+A diverse set of ImageNet-pretrained models is trained to capture complementary visual cues:
 
-* **Vision Transformer (ViT-Base)**: Captures long-range dependencies and global road structure.
-* **Swin Transformer (Tiny)**: Hierarchical transformer for multi-scale feature extraction.
-* **EfficientNet-B0**: Optimized CNN for identifying fine-grained textures efficiently.
-* **ResNet50**: Deep residual network for robust feature extraction.
+* **Vision Transformer (ViT-Base)**: Models long-range dependencies and global road structure.
+* **Swin Transformer (Tiny)**: Hierarchical Transformer capturing multi-scale contextual information.
+* **EfficientNet-B0**: Lightweight CNN optimized for fine-grained texture analysis.
+* **ResNet50**: Deep residual CNN for robust and stable feature extraction.
 
 **Ensemble Strategy:**
 
-* Extract logits/probabilities from all four fine-tuned models.
-* Apply a **Weighted Soft Voting** mechanism to combine predictions.
-* Leverage the diversity of Transformers and CNNs to correct individual model errors.
+* Extract logits or class probabilities from all four models.
+* Combine predictions using a **Weighted Soft Voting** scheme.
+* Exploit architectural diversity to reduce individual model biases and improve robustness.
 
 ### 4) Training Strategy
 
-* **Transfer Learning**: Fine-tuning pre-trained weights to converge faster.
-* **Mixed-Precision Training (AMP)**: Reduced memory usage and faster training via `torch.cuda.amp`.
-* **Scheduler**: Cosine Annealing with Warmup to prevent local minima stagnation.
-* **Optimizer**: AdamW (optimized for Transformers).
-* **Loss Function**: Cross-Entropy Loss with Label Smoothing.
+* **Transfer Learning**: Fine-tune pretrained models to accelerate convergence.
+* **Automatic Mixed Precision (AMP)**: Improve training efficiency and reduce memory usage.
+* **Learning Rate Scheduling**: Cosine Annealing with warmup to stabilize optimization.
+* **Optimizer**: AdamW, well-suited for Transformer-based architectures.
+* **Loss Function**: Cross-Entropy Loss with label smoothing to improve generalization.
 
 ### 5) Model Evaluation
 
-Evaluate models using standard computer vision metrics:
+Models are evaluated using standard and robust metrics:
 
-* **Accuracy**: Overall correctness of road assessment.
-* **Precision/Recall**: Critical for minimizing false alarms (maintenance cost) and missed potholes (safety risk).
-* **F1-Score**: Harmonic mean for balanced performance.
-* **Confusion Matrices**: Detailed breakdown of misclassifications.
-* **K-Fold Cross-Validation**: ensuring the model generalizes across different data splits.
+* **Accuracy**: Overall classification correctness.
+* **Precision and Recall**: Important for balancing false alarms and missed potholes.
+* **F1-Score**: Balanced performance indicator.
+* **Confusion Matrices**: Detailed error analysis.
+* **K-Fold Cross-Validation**: Ensures performance stability across data splits.
 
 ### 6) Ablation Studies
 
-To better understand the contribution of individual components, we conduct controlled ablation studies using **5-fold cross-validation**, where only one factor is modified at a time while keeping the remaining training protocol unchanged. The ablations analyze:
+To analyze the contribution of individual design choices, controlled ablation studies are conducted using **K-fold cross-validation**, modifying one component at a time while keeping the rest of the pipeline unchanged. The ablations examine:
 
-- **Pretraining vs. Training from Scratch** – to quantify the benefit of ImageNet initialization.
-- **Data Augmentation** – to assess robustness gains from geometric and photometric transformations.
-- **Backbone Fine-Tuning vs. Freezing** – to evaluate the necessity of deep feature adaptation.
-- **Input Resolution** – to study the effect of spatial detail on pothole recognition.
-- **Loss Function Choice** – to examine performance sensitivity to different optimization objectives.
+- **Pretraining vs. Training from Scratch** – to assess the impact of ImageNet initialization.
+- **Data Augmentation** – to evaluate robustness improvements from augmentation.
+- **Backbone Freezing vs. Fine-Tuning** – to study feature adaptability.
+- **Input Resolution** – to understand the role of spatial detail.
+- **Loss Function Choice** – to measure sensitivity to optimization objectives.
 
-These studies isolate which architectural and training decisions most strongly influence performance and provide deeper insight into why the hybrid Transformer–CNN ensemble achieves superior results.
+These studies clarify which architectural and training decisions most strongly influence performance and explain the effectiveness of the hybrid Transformer–CNN ensemble.
 
 ### 7) Explainable AI (XAI) Framework
 
-Ensure transparency through a multi-method interpretability suite:
+Model transparency is ensured through multiple complementary interpretability techniques:
 
-* **Grad-CAM**: Generates heatmaps for CNNs to show "where" the model is looking.
-* **SHAP (SHapley Additive exPlanations)**: Game-theoretic approach to explain Transformer token importance.
-* **LIME (Local Interpretable Model-agnostic Explanations)**: Perturbation-based explanation for model-agnostic verification.
+* **Grad-CAM**: Highlights spatial regions influencing CNN predictions.
+* **SHAP (SHapley Additive exPlanations)**: Quantifies the contribution of Transformer input regions.
+* **LIME (Local Interpretable Model-agnostic Explanations)**: Provides local, perturbation-based explanations independent of model type.
 
 ## Results
 
-The project demonstrates highly effective road damage detection with rigorous validation:
+The system demonstrates strong and consistent pothole detection performance:
 
 **Key Findings:**
 
-* Hybrid Ensemble outperforms individual CNN or ViT models by capturing both texture and structure.
-* **ViT** excels at distinguishing complex road scenes (e.g., shadows vs. holes).
-* **CNNs** excel at detecting sharp edges and crack textures.
-* XAI visualizations confirm the model focuses on the actual pavement defects rather than background noise (e.g., grass, cars).
+* The hybrid ensemble outperforms individual CNN and Transformer models by combining texture-level and contextual cues.
+* **Vision Transformers** are particularly effective at distinguishing potholes from visually similar artifacts such as shadows.
+* **CNNs** excel at capturing sharp edges and surface irregularities.
+* XAI visualizations confirm that predictions are driven by pavement damage characteristics rather than irrelevant background features.
 
 ## Dataset
 
-**Source**: [Kaggle - Pothole Detection Dataset](https://www.kaggle.com/datasets/atulyakumar98/pothole-detection-dataset)
+**Source**: [Kaggle – Pothole Detection Dataset](https://www.kaggle.com/datasets/atulyakumar98/pothole-detection-dataset)
 
 **Classes**: Pothole, Normal
 
-**Type**: RGB Images of road surfaces
+**Type**: RGB images of road surfaces
 
 ## Dependencies
 
-The project requires the following Python libraries:
+The project uses the following Python libraries:
 
-```bash
+```
 numpy
 pandas
 torch
@@ -110,30 +110,25 @@ captum
 shap
 lime
 opencv-python
-
 ```
 
-Install the dependencies using:
+Install dependencies with:
 
-```bash
+```
 pip install torch torchvision timm albumentations scikit-learn matplotlib captum shap lime opencv-python
-
 ```
 
-## Installation
-
-1. **Clone the repository**
-
-```bash
+Installation
+	1.	Clone the repository
+```
 git clone https://github.com/sakshammgarg/PotholeDetection.git
 cd PotholeDetection
 ```
 
-2. **Download the dataset**
-* Visit [Kaggle Dataset](https://www.kaggle.com/datasets/atulyakumar98/pothole-detection-dataset)
-* Download and extract the dataset
-* Organize images into the standard directory structure:
-
+	2.	Download the dataset
+  • Visit the Kaggle Dataset.
+	•	Download and extract the dataset.
+	•	Organize images as follows:
 ```
 /input
   /pothole-detection-dataset
@@ -141,58 +136,53 @@ cd PotholeDetection
     /potholes
 ```
 
-## Usage
+Usage
 
-Run the notebook to explore the complete analysis and training pipeline.
+Run the provided notebook to execute the full training and evaluation pipeline.
 
-The notebook will:
+The notebook performs the following steps:
+	1.	Initializes the Albumentations preprocessing pipeline.
+	2.	Trains individual models (ViT, Swin, EfficientNet, ResNet) using AMP.
+	3.	Performs ensemble inference.
+	4.	Displays evaluation metrics (Accuracy, F1-score, ROC curves).
+	5.	Generates Grad-CAM, SHAP, and LIME visualizations for selected images.
 
-1. Initialize the Albumentations preprocessing pipeline.
-2. Train individual models (ViT, Swin, EfficientNet, ResNet) with AMP.
-3. Perform Ensemble inference on the test set.
-4. Display evaluation metrics (Accuracy, F1, ROC Curves).
-5. Generate **Grad-CAM**, **SHAP**, and **LIME** visualizations for specific test images.
+Model Selection Guide
 
-## Model Selection Guide
+Recommended Choices for Deployment:
+	•	Highest Accuracy: Hybrid Ensemble.
+	•	Edge or Low-Power Devices: EfficientNet-B0 or Swin-Tiny.
+	•	Complex Lighting Conditions: ViT-Base.
+	•	Clear Visual Explanations: ResNet50 with Grad-CAM.
 
-**For Deployment Scenarios:**
+Advanced Features
 
-* **Best Accuracy**: Hybrid Ensemble (ViT + CNN combined).
-* **Edge Devices (Drones/Dashcams)**: EfficientNet-B0 or Swin-Tiny (Low latency).
-* **Complex Environments**: ViT-Base (Better handling of shadows/lighting).
-* **Interpretability**: ResNet50 with Grad-CAM (Cleanest heatmaps).
+Key technical highlights include:
+	•	Hybrid Deep Learning: Integration of attention-based and convolutional paradigms.
+	•	Timm Library Usage: Access to high-quality pretrained models.
+	•	Robust Augmentation: Albumentations for realistic data variation.
+	•	Mixed Precision Training: Efficient GPU utilization.
+	•	Multi-Method XAI: Cross-verification of explanations.
+	•	Cosine Warmup Scheduling: Improved training stability.
 
-## Advanced Features
+Applications
 
-This comprehensive implementation includes:
+Potential real-world applications include:
+	•	Autonomous and Assisted Driving Systems
+	•	Smart City Infrastructure Monitoring
+	•	Drone-Based Road Inspection
+	•	Municipal Maintenance Prioritization
+	•	Citizen Reporting and Verification Platforms
 
-* **Hybrid Deep Learning**: Merging two distinct paradigms (Attention mechanisms & Convolutions).
-* **Timm Library Integration**: Access to state-of-the-art pre-trained weights.
-* **Robust Preprocessing**: Albumentations for geometric and color-space augmentation.
-* **Automatic Mixed Precision**: Optimizing training speed on GPUs.
-* **Triangulated XAI**: Using three different explanation methods to verify model trust.
-* **Cosine Warmup**: Advanced learning rate scheduling for training stability.
+Future Improvements
 
-## Applications
+Planned extensions of this work include:
+	1.	Object Detection: Localizing multiple potholes per image.
+	2.	Severity Estimation: Predicting pothole depth or damage extent.
+	3.	Video-Based Inference: Leveraging temporal consistency from dashcam footage.
+	4.	Edge Deployment: Model quantization for mobile and embedded systems.
+	5.	3D Surface Analysis: Estimating pothole volume using stereo or depth data.
 
-Practical use cases for this pothole detection system:
+⸻
 
-* **Autonomous Vehicles**: Real-time road scanning for navigation adjustment.
-* **Smart Cities**: Automated surveying using municipal garbage trucks or buses.
-* **Drone Surveillance**: Aerial inspection of highway infrastructure.
-* **Maintenance Prioritization**: Categorizing road damage severity for repair scheduling.
-* **Citizen Reporting Apps**: Validating user-uploaded photos of road damage.
-
-## Future Improvements
-
-Potential enhancements for even better results:
-
-1. **Object Detection**: Switching to YOLO/Faster-RCNN to localize multiple potholes per image.
-2. **Severity Estimation**: Regression model to predict the depth/volume of the pothole.
-3. **Video Inference**: Temporal consistency checks for dashcam video feeds.
-4. **Edge Optimization**: Quantization (INT8) for deployment on mobile phones.
-5. **3D Reconstruction**: Using stereo vision to estimate pothole volume for filler material calculation.
-
----
-
-This project demonstrates how **Hybrid Architectures** and **Explainable AI** can be combined to build accurate, robust, and transparent infrastructure monitoring systems.
+This project demonstrates how hybrid deep learning architectures and explainable AI can be combined to build accurate, robust, and trustworthy systems for automated road infrastructure monitoring.
